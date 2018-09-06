@@ -1,0 +1,12 @@
+spring:
+  oauth2:
+    client:
+      clientId: 941770538484-uc20musmfn6mqc7ffeg3l1qr7jcakn0g.apps.googleusercontent.com
+      clientSecret: z1s6_zbnYwdgOurmkiCQliit
+      accessTokenUri: https://www.googleapis.com/oauth2/v3/token
+      userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
+      clientAuthenticationScheme: query
+      scope: profile email https://www.googleapis.com/auth/calendar
+    resource:
+      userInfoUri: https://www.googleapis.com/plus/v1/people/me
+      preferTokenInfo: false

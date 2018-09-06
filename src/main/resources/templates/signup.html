@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Login To Calendar App</title>
+</head>
+<body>
+<h1>Login</h1>
+<form name='f' action="${pageContextrequest.contextPath}/account/login.html" method='POST'>
+    <table>
+        <tr>
+            <td>Username:</td>
+            <td><input type='text' name='username' value=''></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type='password' name='password' /></td>
+        </tr>
+        <tr>
+            <td>Full Name:</td>
+            <td><input type='text' name='fullname' value=''></td>
+        </tr>
+        <tr>
+            <td>Status:</td>
+            <td><input type='checkbox' name='status' value=''></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td><input name="submit" type="" value="Save" /></td>
+        </tr>
+        <tr>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
