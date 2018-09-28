@@ -17,23 +17,25 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar.Events;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
+import devzone.calendarapplication.database.MongoDB;
+import devzone.calendarapplication.mail.SendHTMLEmail;
+import devzone.calendarapplication.model.EventEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class GoogleCalController
@@ -57,6 +59,11 @@ public class GoogleCalController
     private String redirectURI;
     
     private Set<Event> events = new HashSet<>();
+    List<Event> googleEvents = new ArrayList<>();
+    
+    String message;
+    
+    private SendHTMLEmail sendMail;
     
     final DateTime date1 = new DateTime("2017-05-05T16:30:00.000+05:30");
     final DateTime date2 = new DateTime(new Date());
@@ -67,16 +74,54 @@ public class GoogleCalController
     }
     
     @RequestMapping(value = "/login/google", method = RequestMethod.GET)
-    public RedirectView googleConnectionStatus(HttpServletRequest request) throws Exception
-    {
+    public RedirectView googleConnectionStatus(HttpServletRequest request) throws Exception {
         return new RedirectView(authorize());
     }
     
     @RequestMapping(value = "/login/google", method = RequestMethod.GET, params = "code")
-    public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code)
-    {
+    public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code) {
         com.google.api.services.calendar.model.Events eventList;
         String message;
+        try {
+            TokenResponse response = flow.newTokenRequest(code).setRedirectUri(redirectURI).execute();
+            credential = flow.createAndStoreCredential(response, "userID");
+            client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
+                    .setApplicationName(APPLICATION_NAME).build();
+            Events events = client.events();
+            eventList = events.list("primary").setTimeMin(date1).setTimeMax(date2).execute();
+            message = eventList.getItems().toString();
+            System.out.println("My:" + eventList.getItems());
+        } catch (Exception e) {
+            logger.warn("Exception while handling OAuth2 callback (" + e.getMessage() + ")."
+                    + " Redirecting to google connection status page.");
+            message = "Exception while handling OAuth2 callback (" + e.getMessage() + ")."
+                    + " Redirecting to google connection status page.";
+        }
+        
+        System.out.println("cal message:" + message);
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+    
+    /*@RequestMapping(value = "/login/callback", method = RequestMethod.GET, params = "code")
+    public ResponseEntity<List <EventEntity>> oauth2Callback(@RequestParam(value = "code") String code)
+    {
+        
+        ModelAndView modelAndView = new ModelAndView();
+        
+        List<EventEntity> ee = getCalendarEvents(code);
+    
+        modelAndView.addObject("responseEntity", new ResponseEntity<>(ee, HttpStatus.OK));
+        modelAndView.addObject("events" , ee);
+        
+        return new ResponseEntity<>(ee, HttpStatus.OK);
+    }*/
+    
+    private List<EventEntity> getCalendarEvents(String code)
+    {
+        List<EventEntity> ee = new ArrayList<>();
+            
+                com.google.api.services.calendar.model.Events eventList;
+        
         try
         {
             TokenResponse response = flow.newTokenRequest(code).setRedirectUri(redirectURI).execute();
@@ -86,7 +131,26 @@ public class GoogleCalController
             Events events = client.events();
             eventList = events.list("primary").setTimeMin(date1).setTimeMax(date2).execute();
             message = eventList.getItems().toString();
+            googleEvents = eventList.getItems();
+        
+            EventEntity eventPersist = new EventEntity();
+        
+            for (Event event : googleEvents)
+            {
+                eventPersist.setColorId(event.getColorId());
+                eventPersist.setCreated(event.getCreated());
+                eventPersist.setCreator(event.getCreator());
+                eventPersist.setDescription(event.getDescription());
+                eventPersist.setLocation(event.getLocation());
+                eventPersist.setSummary(event.getSummary());
+            
+                ee.add(eventPersist);
+            
+                eventPersist.persist(eventPersist);
+            }
             System.out.println("My:" + eventList.getItems());
+        
+        
         }
         catch (Exception e)
         {
@@ -95,9 +159,17 @@ public class GoogleCalController
             message = "Exception while handling OAuth2 callback (" + e.getMessage() + ")."
                     + " Redirecting to google connection status page.";
         }
-        
+    
         System.out.println("cal message:" + message);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        
+        return ee;
+    }
+    
+    private void refreshDataTable() {
+//        googleEvents.clear();
+//        googleEvents.addAll(getCalendarEvents());
+//        updateOrderCount(allOrders.size());
+//        grid.getDataProvider().refreshAll();
     }
     
     public Set<Event> getEvents() throws IOException
@@ -120,6 +192,8 @@ public class GoogleCalController
         }
         authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
         System.out.println("cal authorizationUrl->" + authorizationUrl);
+        System.out.println("----------***Sending Mail***--------------");
+        sendMail.loginMail();
         return authorizationUrl.build();
     }
 }
