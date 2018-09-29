@@ -8,8 +8,34 @@
 <!--<p th:text="${success}"  th:class="success"></p>-->
 <!--<h1 th:text="'Welcome ' + ${session.username} + ' '+ ${username} + ' !!!'"></h1>-->
 <h1 th:text="'Welcome '+ ${username} + '!!!'"></h1>
+
+
+<div>
+
+    <table>
+        <tr>
+            <th>Description</th>
+            <th>Created Date</th>
+            <th>Kind</th>
+            <th>Location</th>
+            <th>Original Start Time</th>
+            <th>Status</th>
+            <th>Summary</th>
+        </tr>
+
+        <tr th:each="event:${events}">
+            <td th:text="${event.getDescription()}">Description</td>
+            <td th:text="${event.getCreated()}">Created Date</td>
+            <td th:text="${event.getKind()}">Kind</td>
+            <td th:text="${event.getLocation()}">Location</td>
+            <td th:text="${event.getOriginalStartTime()}">Original Start Time</td>
+            <td th:text="${event.getStatus()}">Status</td>
+            <td th:text="${event.getSummary()}">Summary</td>
+        </tr>
+    </table>
+</div>
 <br>
-<a href="@{/logout}" th:href="@{/logout}">Log Out</a> |
+<a href="@{/logout}" th:href="@{/logout}">Log Out</a>
 <!--<a href="@{/profile}">Change Profile</a>-->
 </body>
 </html>
