@@ -38,7 +38,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
-@RequestMapping("/login")
+//@RequestMapping("/login")
 public class GoogleCalController
 {
     private final static Log logger = LogFactory.getLog(GoogleCalController.class);
@@ -76,11 +76,13 @@ public class GoogleCalController
     
     @RequestMapping(value = "/google", method = RequestMethod.GET)
     public RedirectView googleConnectionStatus(HttpServletRequest request) throws Exception {
+        System.out.println("Inside googleConnectionStatus----------");
         return new RedirectView(authorize());
     }
     
     @RequestMapping(value = "/google", method = RequestMethod.GET, params = "code")
     public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code) {
+        System.out.println("Inside oauth2Callback-----------");
         com.google.api.services.calendar.model.Events eventList;
         String message;
         try {
@@ -169,6 +171,7 @@ public class GoogleCalController
     
     private String authorize() throws Exception
     {
+        System.out.println("Inside authorize----------");
         AuthorizationCodeRequestUrl authorizationUrl;
         if (flow == null)
         {
