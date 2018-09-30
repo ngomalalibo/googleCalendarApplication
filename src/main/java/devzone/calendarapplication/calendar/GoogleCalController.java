@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
+@RequestMapping("/login")
 public class GoogleCalController
 {
     private final static Log logger = LogFactory.getLog(GoogleCalController.class);
@@ -73,12 +74,12 @@ public class GoogleCalController
         this.events = events;
     }
     
-    @RequestMapping(value = "/login/google", method = RequestMethod.GET)
+    @RequestMapping(value = "/google", method = RequestMethod.GET)
     public RedirectView googleConnectionStatus(HttpServletRequest request) throws Exception {
         return new RedirectView(authorize());
     }
     
-    @RequestMapping(value = "/login/google", method = RequestMethod.GET, params = "code")
+    @RequestMapping(value = "/google", method = RequestMethod.GET, params = "code")
     public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code) {
         com.google.api.services.calendar.model.Events eventList;
         String message;
@@ -89,6 +90,7 @@ public class GoogleCalController
                     .setApplicationName(APPLICATION_NAME).build();
             Events events = client.events();
             eventList = events.list("primary").setTimeMin(date1).setTimeMax(date2).execute();
+            getCalendarEvents(eventList.getItems());
             message = eventList.getItems().toString();
             System.out.println("My:" + eventList.getItems());
         } catch (Exception e) {
@@ -116,26 +118,17 @@ public class GoogleCalController
         return new ResponseEntity<>(ee, HttpStatus.OK);
     }*/
     
-    private List<EventEntity> getCalendarEvents(String code)
+    private List<EventEntity> getCalendarEvents(List<Event> events)
     {
         List<EventEntity> ee = new ArrayList<>();
             
-                com.google.api.services.calendar.model.Events eventList;
+                //com.google.api.services.calendar.model.Events eventList;
         
         try
         {
-            TokenResponse response = flow.newTokenRequest(code).setRedirectUri(redirectURI).execute();
-            credential = flow.createAndStoreCredential(response, "userID");
-            client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
-                    .setApplicationName(APPLICATION_NAME).build();
-            Events events = client.events();
-            eventList = events.list("primary").setTimeMin(date1).setTimeMax(date2).execute();
-            message = eventList.getItems().toString();
-            googleEvents = eventList.getItems();
-        
             EventEntity eventPersist = new EventEntity();
         
-            for (Event event : googleEvents)
+            for (Event event : events)
             {
                 eventPersist.setColorId(event.getColorId());
                 eventPersist.setCreated(event.getCreated());
@@ -148,9 +141,6 @@ public class GoogleCalController
             
                 eventPersist.persist(eventPersist);
             }
-            System.out.println("My:" + eventList.getItems());
-        
-        
         }
         catch (Exception e)
         {

@@ -66,14 +66,13 @@ public class UserController
             modelAndView.addObject("success", "Welcome! You have successfully Logged in " + user.getUsername());
             modelAndView.addObject("user", user);
             sendMail.loginMail();
-            //return "welcome";
+//            return modelAndView;
         } else
         {
             model.addAttribute("error", "Invalid Details");
-            //return "redirect:index";
+            modelAndView.setViewName("redirect:index");
+//            return "redirect:index";
         }
-    
-        
         return modelAndView;
     }
     

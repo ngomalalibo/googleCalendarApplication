@@ -29,7 +29,7 @@ public class UserDbSeeder implements CommandLineRunner
     
     public void initData()
     {
-        this.userRepository.deleteAll();
+        //this.userRepository.deleteAll();
         
         List<User> users = new ArrayList<>();
         User user1 = new User("ngomalalibo@yahoo.com", "user1", "user1Pass", "admin");
