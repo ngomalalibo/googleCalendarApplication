@@ -76,11 +76,11 @@ public class GoogleCalController
     
     @RequestMapping(value = "/google", method = RequestMethod.GET)
     public RedirectView googleConnectionStatus(HttpServletRequest request) throws Exception {
-        System.out.println("Inside googleConnectionStatus----------");
+            System.out.println("Inside googleConnectionStatus----------");
         return new RedirectView(authorize());
     }
     
-    @RequestMapping(value = "/google", method = RequestMethod.GET, params = "code")
+    @RequestMapping(value = "/googleevents", method = RequestMethod.GET, params = "code")
     public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code) {
         System.out.println("Inside oauth2Callback-----------");
         com.google.api.services.calendar.model.Events eventList;
