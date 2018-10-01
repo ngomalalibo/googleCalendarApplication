@@ -39,7 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/index", "/welcome", "/login", "/login/google", "/newUser").permitAll()
                 .anyRequest().fullyAuthenticated()
                 .and()
-                .oauth2Login()
+                .formLogin()
                 .loginPage("/welcome")
                 .permitAll()
                 .and()
