@@ -80,7 +80,7 @@ public class GoogleCalController
     public ResponseEntity addNewClient(HttpServletRequest request, @RequestBody HashMap<String, String> mapper, HttpSession session, HttpServletResponse response) {
         RedirectView redirectView = new RedirectView();
             try {
-                
+                System.out.println("Inside NewCLent");
                 redirectView = googleConnectionStatus(response);
                 logger.info(redirectView.getUrl());
                 response.sendRedirect(redirectView.getUrl());
