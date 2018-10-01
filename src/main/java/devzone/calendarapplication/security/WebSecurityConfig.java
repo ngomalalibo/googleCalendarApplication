@@ -18,12 +18,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                /*.csrf()
+                .disable()
+                .cors()
+                .disable()
+                .httpBasic()
+                .and()
                 .authorizeRequests()
                 .antMatchers("/", "/index", "/welcome", "/login", "/login/google").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/index")
+                .oauth2Login()
+                .and()
+                .logout()//
+                // after successful logout the application will redirect to "/"
+                // path
+                .logoutSuccessUrl("/");*/
+                
+                .authorizeRequests()
+                .antMatchers("/", "/index", "/welcome", "/login", "/login/google").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .oauth2Login()
+                .loginPage("/welcome")
                 .permitAll()
                 .and()
                 .logout()
