@@ -18,24 +18,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                /*.csrf()
+                .csrf()
                 .disable()
-                .cors()
-                .disable()
-                .httpBasic()
-                .and()
+                .antMatcher("/**")
                 .authorizeRequests()
-                .antMatchers("/", "/index", "/welcome", "/login", "/login/google").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .oauth2Login()
-                .and()
-                .logout()//
-                // after successful logout the application will redirect to "/"
-                // path
-                .logoutSuccessUrl("/");*/
+                .antMatchers("/", "/index", "/welcome", "/login", "/login/google", "/user")
+                .permitAll()
+                .anyRequest()
+                .authenticated();
                 
-                .authorizeRequests()
+                /*.authorizeRequests()
                 .antMatchers("/", "/index", "/welcome", "/login", "/login/google", "/newUser").permitAll()
                 .anyRequest().fullyAuthenticated()
                 .and()
@@ -44,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .logout()
-                .permitAll();
+                .permitAll();*/
     }
     
     @Bean

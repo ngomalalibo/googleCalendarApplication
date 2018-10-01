@@ -36,11 +36,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.*;
 
 @Controller
-//@RequestMapping("/user")
-//@RequestMapping("/login")
 public class GoogleCalController
 {
     private final static Log logger = LogFactory.getLog(GoogleCalController.class);
@@ -54,11 +53,11 @@ public class GoogleCalController
     //EmbeddedLdapProperties.Credential credential;
     Credential credential;
     
-    @Value("${google.client.client-id}")
+    @Value("${security.oauth2.client.client-id}")
     private String clientId;
-    @Value("${google.client.client-secret}")
+    @Value("${security.oauth2.client.client-secret}")
     private String clientSecret;
-    @Value("${google.client.redirectUri}")
+    @Value("${security.oauth2.client.registered-redirect-uri}")
     private String redirectURI;
     
     private Set<Event> events = new HashSet<>();
@@ -76,15 +75,15 @@ public class GoogleCalController
         this.events = events;
     }
     
-    @RequestMapping(value = "/newUser", method = RequestMethod.GET)
-    public ResponseEntity addNewClient(HttpServletRequest request, @RequestBody HashMap<String, String> mapper, HttpSession session, HttpServletResponse response) {
+    @RequestMapping(value = "/user")
+    public ResponseEntity addNewClient(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
         RedirectView redirectView = new RedirectView();
             try {
                 System.out.println("Inside NewCLent");
                 redirectView = googleConnectionStatus(response);
                 logger.info(redirectView.getUrl());
                 response.sendRedirect(redirectView.getUrl());
-                return null;
+                return new ResponseEntity(redirectView.getUrl(), HttpStatus.OK);
             } catch (Exception ex) {
             }
         
@@ -140,7 +139,7 @@ public class GoogleCalController
     private List<EventEntity> getCalendarEvents(List<Event> events)
     {
         List<EventEntity> ee = new ArrayList<>();
-            
+        
         try
         {
             EventEntity eventPersist = new EventEntity();
