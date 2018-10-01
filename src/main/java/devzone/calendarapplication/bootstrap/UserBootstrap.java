@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class UserBootstrap // implements ApplicationListener<ContextRefreshedEvent> (Is called before maven package is executed causing an error)
+public class UserBootstrap // implements ApplicationListener<ContextRefreshedEvent> (Is called before maven package is executed causing an error) Study Spring initialization diagram
 {
     
     /*@Autowired
