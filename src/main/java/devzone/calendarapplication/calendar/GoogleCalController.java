@@ -76,7 +76,7 @@ public class GoogleCalController
         this.events = events;
     }
     
-    @RequestMapping(value = "/newUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/newUser", method = RequestMethod.GET)
     public ResponseEntity addNewClient(HttpServletRequest request, @RequestBody HashMap<String, String> mapper, HttpSession session, HttpServletResponse response) {
         RedirectView redirectView = new RedirectView();
             try {
