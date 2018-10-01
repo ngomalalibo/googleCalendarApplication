@@ -75,7 +75,7 @@ public class GoogleCalController
         this.events = events;
     }
     
-    @RequestMapping(value = "/user")
+    @RequestMapping(value = "/newUser")
     public ResponseEntity addNewClient(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
         RedirectView redirectView = new RedirectView();
             try {
@@ -83,7 +83,7 @@ public class GoogleCalController
                 redirectView = googleConnectionStatus(response);
                 logger.info(redirectView.getUrl());
                 response.sendRedirect(redirectView.getUrl());
-                return new ResponseEntity(redirectView.getUrl(), HttpStatus.OK);
+                //return new ResponseEntity(redirectView.getUrl(), HttpStatus.OK);
             } catch (Exception ex) {
             }
         
