@@ -8,5 +8,6 @@ spring:
       clientAuthenticationScheme: query
       scope: profile email https://www.googleapis.com/auth/calendar
     resource:
-      userInfoUri: https://www.googleapis.com/plus/v1/people/me
-      preferTokenInfo: false
+#      userInfoUri: https://www.googleapis.com/plus/v1/people/me
+      userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+      preferTokenInfo: true

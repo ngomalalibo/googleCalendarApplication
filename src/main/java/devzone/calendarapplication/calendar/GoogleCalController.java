@@ -22,22 +22,24 @@ import devzone.calendarapplication.mail.SendHTMLEmail;
 import devzone.calendarapplication.model.EventEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
 
 @Controller
+//@RequestMapping("/user")
 //@RequestMapping("/login")
 public class GoogleCalController
 {
@@ -74,14 +76,29 @@ public class GoogleCalController
         this.events = events;
     }
     
-    @RequestMapping(value = "/google", method = RequestMethod.GET)
-    public RedirectView googleConnectionStatus(HttpServletRequest request) throws Exception {
+    @RequestMapping(value = "/newUser", method = RequestMethod.POST)
+    public ResponseEntity addNewClient(HttpServletRequest request, @RequestBody HashMap<String, String> mapper, HttpSession session, HttpServletResponse response) {
+        RedirectView redirectView = new RedirectView();
+            try {
+                
+                redirectView = googleConnectionStatus(response);
+                logger.info(redirectView.getUrl());
+                response.sendRedirect(redirectView.getUrl());
+                return null;
+            } catch (Exception ex) {
+            }
+        
+        return new ResponseEntity(redirectView.getUrl(), HttpStatus.OK);
+    }
+    
+    //@RequestMapping(value = "/google", method = RequestMethod.GET)
+    public RedirectView googleConnectionStatus(HttpServletResponse response) throws Exception {
             System.out.println("Inside googleConnectionStatus----------");
         return new RedirectView(authorize());
     }
     
-    @RequestMapping(value = "/googleevents", method = RequestMethod.GET, params = "code")
-    public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code) {
+    @RequestMapping(value = "/login/google", method = RequestMethod.GET, params = "code")
+    public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code, HttpSession session, Model model) {
         System.out.println("Inside oauth2Callback-----------");
         com.google.api.services.calendar.model.Events eventList;
         String message;
@@ -124,8 +141,6 @@ public class GoogleCalController
     {
         List<EventEntity> ee = new ArrayList<>();
             
-                //com.google.api.services.calendar.model.Events eventList;
-        
         try
         {
             EventEntity eventPersist = new EventEntity();
@@ -183,7 +198,7 @@ public class GoogleCalController
             flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
                     Collections.singleton(CalendarScopes.CALENDAR)).build();
         }
-        authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
+        authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
         System.out.println("cal authorizationUrl->" + authorizationUrl);
         System.out.println("----------***Sending Mail***--------------");
         sendMail.loginMail();

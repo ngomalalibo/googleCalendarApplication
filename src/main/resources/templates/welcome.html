@@ -7,10 +7,11 @@
 <body>
 <!--<p th:text="${success}"  th:class="success"></p>-->
 <!--<h1 th:text="'Welcome ' + ${session.username} + ' '+ ${username} + ' !!!'"></h1>-->
-<h1 th:text="'Welcome '+ ${username} + '!!!'"></h1>
+<h1 th:text="'Welcome !!!'"></h1>
+<!--<h1 th:text="'Welcome '+ ${username} + '!!!'"></h1>-->
 
 
-<div>
+<!--<div>
 
     <table>
         <tr>
@@ -33,7 +34,7 @@
             <td th:text="${event.getSummary()}">Summary</td>
         </tr>
     </table>
-</div>
+</div>-->
 <br>
 <a href="@{/logout}" th:href="@{/logout}">Log Out</a>
 <!--<a href="@{/profile}">Change Profile</a>-->
