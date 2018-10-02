@@ -82,37 +82,44 @@ public class GoogleCalController
     }
     
     @RequestMapping(value = "/newUser")
-    public ResponseEntity addNewClient(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
+    public ResponseEntity addNewClient(HttpServletRequest request, HttpSession session, HttpServletResponse response)
+    {
         RedirectView redirectView = new RedirectView();
-            try {
-                System.out.println("Inside newUser--------");
-                redirectView = googleConnectionStatus(request);
-                System.out.println("Inside newUser 2--------");
-                logger.info(redirectView.getUrl());
-                System.out.println("Inside newUser 3--------");
-                response.sendRedirect(redirectView.getUrl());
-                System.out.println("Inside newUser 4--------");
-    
-                //return new ResponseEntity(redirectView.getUrl(), HttpStatus.OK);
-            } catch (Exception ex) {
-            }
+        try
+        {
+            System.out.println("Inside newUser--------");
+            redirectView = googleConnectionStatus(request);
+            System.out.println("Inside newUser 2--------");
+            logger.info(redirectView.getUrl());
+            System.out.println("Inside newUser 3--------");
+            response.sendRedirect(redirectView.getUrl());
+            System.out.println("Inside newUser 4--------");
+            
+            //return new ResponseEntity(redirectView.getUrl(), HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+        }
         
         return new ResponseEntity(redirectView.getUrl(), HttpStatus.OK);
     }
     
-    @RequestMapping(value = "/google", method = RequestMethod.GET)
-    public RedirectView googleConnectionStatus(HttpServletRequest request) throws Exception {
-            System.out.println("Inside googleConnectionStatus----------");
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public RedirectView googleConnectionStatus(HttpServletRequest request) throws Exception
+    {
+        System.out.println("Inside googleConnectionStatus----------");
         return new RedirectView(authorize());
     }
     
     @RequestMapping(value = "/login/google", method = RequestMethod.GET, params = "code")
-    public ResponseEntity<ModelAndView> oauth2Callback(@RequestParam(value = "code") String code, HttpSession session, Model model) {
+    public ResponseEntity<ModelAndView> oauth2Callback(@RequestParam(value = "code") String code, HttpSession session, Model model)
+    {
         System.out.println("Inside oauth2Callback-----------");
         com.google.api.services.calendar.model.Events eventList;
         String message;
         ModelAndView mv = new ModelAndView();
-        try {
+        try
+        {
             TokenResponse response = flow.newTokenRequest(code).setRedirectUri(redirectURI).execute();
             credential = flow.createAndStoreCredential(response, "userID");
             client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
@@ -122,7 +129,9 @@ public class GoogleCalController
             getCalendarEvents(eventList.getItems());
             message = eventList.getItems().toString();
             System.out.println("My:" + eventList.getItems());
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             logger.warn("Exception while handling OAuth2 callback (" + e.getMessage() + ")."
                     + " Redirecting to google connection status page.");
             message = "Exception while handling OAuth2 callback (" + e.getMessage() + ")."
@@ -156,7 +165,7 @@ public class GoogleCalController
         try
         {
             EventEntity eventPersist = new EventEntity();
-        
+            
             for (Event event : events)
             {
                 eventPersist.setColorId(event.getColorId());
@@ -165,9 +174,9 @@ public class GoogleCalController
                 eventPersist.setDescription(event.getDescription());
                 eventPersist.setLocation(event.getLocation());
                 eventPersist.setSummary(event.getSummary());
-            
+                
                 ee.add(eventPersist);
-            
+                
                 eventPersist.persist(eventPersist);
             }
         }
@@ -178,13 +187,14 @@ public class GoogleCalController
             message = "Exception while handling OAuth2 callback (" + e.getMessage() + ")."
                     + " Redirecting to google connection status page.";
         }
-    
+        
         System.out.println("cal message:" + message);
         
         return ee;
     }
     
-    private void refreshDataTable() {
+    private void refreshDataTable()
+    {
 //        googleEvents.clear();
 //        googleEvents.addAll(getCalendarEvents());
 //        updateOrderCount(allOrders.size());
