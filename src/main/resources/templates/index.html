@@ -32,7 +32,7 @@
     <div class="row">
         <div class="col-md-6 col-md-offset-3 pull-right">
             <h1>Login</h1>
-            <form action="#" th:action="@{/login}" th:object="${user}" method="POST">
+            <form action="#" th:action="@{login}" th:object="${user}" method="POST">
                 <p th:text="${error}" class="error">Password Static String</p>
                 <table>
                     <tr>
@@ -67,7 +67,7 @@
                 </table>
             </form>
 
-            <p><a th:href="@{/login}">Sign In with Google</a></p>
+            <p><a th:href="@{login}">Sign In with Google</a></p>
 
         </div>
 
