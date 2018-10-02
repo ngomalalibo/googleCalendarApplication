@@ -20,7 +20,6 @@ import java.util.List;
 //@RestController
 
 //Resolves to http://localhost:8080/<map>
-@RequestMapping("")
 @Controller
 public class UserController
 {
@@ -43,7 +42,7 @@ public class UserController
     }
     
     //@ResponseBody allows you pass pure html as a string to the template/view eg return "<h1>" + Helloworld.getMessage(message)+"<h1>";
-    @RequestMapping(value = {"", "/", "/index"})
+    @RequestMapping(value = {"/", "/index"})
     public ModelAndView welcomePage()
     {
         ModelAndView modelAndView = new ModelAndView("index");
