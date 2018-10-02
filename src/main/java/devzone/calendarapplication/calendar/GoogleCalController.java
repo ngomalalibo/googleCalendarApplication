@@ -79,10 +79,14 @@ public class GoogleCalController
     public ResponseEntity addNewClient(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
         RedirectView redirectView = new RedirectView();
             try {
-                System.out.println("Inside NewCLent");
+                System.out.println("Inside newUser--------");
                 redirectView = googleConnectionStatus(response);
+                System.out.println("Inside newUser 2--------");
                 logger.info(redirectView.getUrl());
+                System.out.println("Inside newUser 3--------");
                 response.sendRedirect(redirectView.getUrl());
+                System.out.println("Inside newUser 4--------");
+    
                 //return new ResponseEntity(redirectView.getUrl(), HttpStatus.OK);
             } catch (Exception ex) {
             }
