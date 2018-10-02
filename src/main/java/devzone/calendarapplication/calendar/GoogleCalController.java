@@ -75,6 +75,12 @@ public class GoogleCalController
         this.events = events;
     }
     
+    @RequestMapping("/welcome")
+    public ModelAndView welcome()
+    {
+        return new ModelAndView("welcome");
+    }
+    
     @RequestMapping(value = "/newUser")
     public ResponseEntity addNewClient(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
         RedirectView redirectView = new RedirectView();
