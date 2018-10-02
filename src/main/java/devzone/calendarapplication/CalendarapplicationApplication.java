@@ -13,7 +13,6 @@ import java.security.Principal;
 @Configuration
 //@PropertySource(value = {"classpath:application.properties"})
 @EnableOAuth2Sso
-@RestController
 @SpringBootApplication
 public class CalendarapplicationApplication
 {
@@ -21,11 +20,5 @@ public class CalendarapplicationApplication
     public static void main(String[] args)
     {
         SpringApplication.run(CalendarapplicationApplication.class, args);
-    }
-    
-    @RequestMapping(value = "/user")
-    public Principal user(Principal principal)
-    {
-        return principal;
     }
 }

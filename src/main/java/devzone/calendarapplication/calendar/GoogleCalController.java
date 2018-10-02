@@ -86,7 +86,7 @@ public class GoogleCalController
         RedirectView redirectView = new RedirectView();
             try {
                 System.out.println("Inside newUser--------");
-                redirectView = googleConnectionStatus(response);
+                redirectView = googleConnectionStatus(request);
                 System.out.println("Inside newUser 2--------");
                 logger.info(redirectView.getUrl());
                 System.out.println("Inside newUser 3--------");
@@ -100,17 +100,18 @@ public class GoogleCalController
         return new ResponseEntity(redirectView.getUrl(), HttpStatus.OK);
     }
     
-    //@RequestMapping(value = "/google", method = RequestMethod.GET)
-    public RedirectView googleConnectionStatus(HttpServletResponse response) throws Exception {
+    @RequestMapping(value = "/google", method = RequestMethod.GET)
+    public RedirectView googleConnectionStatus(HttpServletRequest request) throws Exception {
             System.out.println("Inside googleConnectionStatus----------");
         return new RedirectView(authorize());
     }
     
     @RequestMapping(value = "/login/google", method = RequestMethod.GET, params = "code")
-    public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code, HttpSession session, Model model) {
+    public ResponseEntity<ModelAndView> oauth2Callback(@RequestParam(value = "code") String code, HttpSession session, Model model) {
         System.out.println("Inside oauth2Callback-----------");
         com.google.api.services.calendar.model.Events eventList;
         String message;
+        ModelAndView mv = new ModelAndView();
         try {
             TokenResponse response = flow.newTokenRequest(code).setRedirectUri(redirectURI).execute();
             credential = flow.createAndStoreCredential(response, "userID");
@@ -127,9 +128,11 @@ public class GoogleCalController
             message = "Exception while handling OAuth2 callback (" + e.getMessage() + ")."
                     + " Redirecting to google connection status page.";
         }
+        mv.setViewName("welcome");
         
         System.out.println("cal message:" + message);
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        
+        return new ResponseEntity<>(mv, HttpStatus.OK);
     }
     
     /*@RequestMapping(value = "/login/callback", method = RequestMethod.GET, params = "code")
@@ -207,7 +210,8 @@ public class GoogleCalController
             flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
                     Collections.singleton(CalendarScopes.CALENDAR)).build();
         }
-        authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
+        authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
+        //authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
         System.out.println("cal authorizationUrl->" + authorizationUrl);
         System.out.println("----------***Sending Mail***--------------");
         sendMail.loginMail();

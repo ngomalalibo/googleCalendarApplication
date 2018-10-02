@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 
@@ -33,6 +34,12 @@ public class UserController
         this.userRepository = userRepository;
         this.userRepositoryImpl = userRepositoryImpl;
         this.sendMail = sendMail;
+    }
+    
+    @RequestMapping(value = "/user")
+    public Principal user(Principal principal)
+    {
+        return principal;
     }
     
     //@ResponseBody allows you pass pure html as a string to the template/view eg return "<h1>" + Helloworld.getMessage(message)+"<h1>";
@@ -90,7 +97,7 @@ public class UserController
     }
     
     @GetMapping("/all")
-    public List<User> getall()
+    public List<User> getAllUsers()
     {
         List<User> users = userRepository.findAll();
         return users;
