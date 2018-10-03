@@ -21,7 +21,7 @@ import java.util.List;
 
 //Resolves to http://localhost:8080/<map>
 @Controller
-@RequestMapping("")
+
 public class UserController
 {
     private UserRepository userRepository;
@@ -36,90 +36,18 @@ public class UserController
         this.sendMail = sendMail;
     }
     
-    @RequestMapping(value = "/user")
-    public Principal user(Principal principal)
-    {
-        return principal;
-    }
+    
     
     //@ResponseBody allows you pass pure html as a string to the template/view eg return "<h1>" + Helloworld.getMessage(message)+"<h1>";
-    @RequestMapping(value = {"", "/", "/index"})
-    public ModelAndView welcomePage()
-    {
-        ModelAndView modelAndView = new ModelAndView("index");
-        modelAndView.addObject("user", new User());
-        return modelAndView;
-    }
     
-    @PostMapping("/login")
-    public ModelAndView login(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, HttpSession session, Model model)
-    {
-        ModelAndView modelAndView = new ModelAndView("index");
-        
-        if (bindingResult.hasErrors())
-        {
-            //modelAndView.addObject("user", user);
-            modelAndView.addObject("error", "Please enter a valid username and password");
-            modelAndView.addObject("user", user);
-        }
-        if (userRepositoryImpl.login(user.getUsername(), user.getPassword()))
-        {
-            //model.addAttribute("user", user);
-            modelAndView.addObject("user", user);
-            model.addAttribute("username", user.getUsername());
-            session.setAttribute("username", user.getUsername());
-            session.setAttribute("user", user);
-            modelAndView.setViewName("welcome");
-            modelAndView.addObject("success", "Welcome! You have successfully Logged in " + user.getUsername());
-            modelAndView.addObject("user", user);
-            sendMail.loginMail();
-//            return modelAndView;
-        } else
-        {
-            model.addAttribute("error", "Invalid Details");
-            modelAndView.setViewName("redirect:index");
-//            return "redirect:index";
-        }
-        return modelAndView;
-    }
     
-    @GetMapping("/logout")
-    public ModelAndView logout(HttpSession session)
-    {
-        //ModelAndView modelAndView = new ModelAndView("logout");
-        session.removeAttribute("username");
-        session.removeAttribute("user");
     
-        ModelAndView modelAndView = new ModelAndView("index");
-        modelAndView.addObject("user", new User());
-        sendMail.logoutMail();
-        return modelAndView;
-    }
     
-    @GetMapping("/all")
-    public List<User> getAllUsers()
-    {
-        List<User> users = userRepository.findAll();
-        return users;
-    }
     
-    @PutMapping
-    public void insert(@RequestBody User user)
-    {
-        this.userRepository.insert(user);
-    }
     
-    @PostMapping
-    public void update(@RequestBody User user)
-    {
-        this.userRepository.save(user);
-    }
     
-    @DeleteMapping("/{username}")
-    public void delete(@PathVariable("username") String username)
-    {
-        //this.userRepository.deleteUserByUsername(username);
-    }
+    
+    
     
     /*@GetMapping("/login")
     public String login(@ModelAttribute User user, HttpSession session)
@@ -135,14 +63,7 @@ public class UserController
         return "login";
     }*/
     
-    @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public String signup(@ModelAttribute("user") User user)
-    {
-        /*BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));*/
-        //userRepositoryImpl.signup(user);
-        return "redirect:../user.html";
-    }
+    
     
     /*@RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(@ModelAttribute("user") User user,
