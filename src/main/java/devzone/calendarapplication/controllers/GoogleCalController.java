@@ -1,4 +1,4 @@
-package devzone.calendarapplication.calendar;
+package devzone.calendarapplication.controllers;
 
 import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
 import com.google.api.client.auth.oauth2.Credential;
@@ -17,7 +17,6 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar.Events;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
-import devzone.calendarapplication.database.MongoDB;
 import devzone.calendarapplication.mail.SendHTMLEmail;
 import devzone.calendarapplication.model.EventEntity;
 import devzone.calendarapplication.model.User;
@@ -25,7 +24,6 @@ import devzone.calendarapplication.repositories.UserRepository;
 import devzone.calendarapplication.repositories.UserRepositoryImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
