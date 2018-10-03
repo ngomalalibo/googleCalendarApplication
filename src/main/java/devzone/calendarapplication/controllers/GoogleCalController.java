@@ -136,7 +136,7 @@ public class GoogleCalController
         return new RedirectView(authorize());
     }
     
-    @RequestMapping(value = "/login", method = RequestMethod.GET, params = "code")
+    @RequestMapping(value = "/login", method = RequestMethod.POST, params = "code")
     public ModelAndView oauth2Callback(@RequestParam(value = "code") String code)
     {
         System.out.println("Inside oauth2Callback-----------");
@@ -240,7 +240,7 @@ public class GoogleCalController
     }
     
     
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public ModelAndView login(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, HttpSession session, Model model)
     {
         ModelAndView modelAndView = new ModelAndView("index");
@@ -270,7 +270,7 @@ public class GoogleCalController
 //            return "redirect:index";
         }
         return modelAndView;
-    }
+    }*/
     
     @RequestMapping(value = "/user")
     public Principal user(Principal principal)
