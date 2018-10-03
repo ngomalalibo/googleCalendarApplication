@@ -112,7 +112,7 @@ public class GoogleCalController
     }
     
     @RequestMapping(value = "/login/google", method = RequestMethod.GET, params = "code")
-    public ResponseEntity<ModelAndView> oauth2Callback(@RequestParam(value = "code") String code, HttpSession session, Model model)
+    public ResponseEntity<ModelAndView> oauth2Callback(@RequestParam(value = "code") String code)
     {
         System.out.println("Inside oauth2Callback-----------");
         com.google.api.services.calendar.model.Events eventList;
