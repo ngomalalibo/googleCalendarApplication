@@ -166,7 +166,7 @@ public class GoogleCalController
         
         System.out.println("cal message:" + message);
         
-        return new ResponseEntity<>(mv, HttpStatus.OK);
+        return new ResponseEntity(mv, HttpStatus.OK);
     }
     
     private List<EventEntity> getCalendarEvents(List<Event> events)
