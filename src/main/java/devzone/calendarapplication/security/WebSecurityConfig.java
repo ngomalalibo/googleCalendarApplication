@@ -11,9 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-/*@Configuration
+@Configuration
 @EnableWebSecurity
-@EnableOAuth2Sso*/
+@EnableOAuth2Sso
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -25,7 +25,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/index", "/welcome", "/login", "/login/google", "/user", "/newUser")
                 .permitAll()
                 .anyRequest()
-                .authenticated();
+                .authenticated()
+                /*.and()
+                .formLogin()
+                .loginPage("/index")*/;
                 
                 /*.authorizeRequests()
                 .antMatchers("/", "/index", "/welcome", "/login", "/login/google", "/newUser").permitAll()
