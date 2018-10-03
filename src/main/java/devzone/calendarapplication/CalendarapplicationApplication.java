@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
-@Configuration
-//@PropertySource(value = {"classpath:application.properties"})
-@EnableOAuth2Sso
 @SpringBootApplication
 public class CalendarapplicationApplication
 {
