@@ -129,7 +129,7 @@ public class GoogleCalController
         return new ResponseEntity<>(modelAndView, HttpStatus.OK);
     }
     
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public RedirectView googleConnectionStatus(HttpServletRequest request) throws Exception
     {
         System.out.println("Inside googleConnectionStatus----------");
@@ -137,7 +137,7 @@ public class GoogleCalController
     }
     
     @RequestMapping(value = "/login", method = RequestMethod.GET, params = "code")
-    public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code)
+    public ResponseEntity<ModelAndView> oauth2Callback(@RequestParam(value = "code") String code)
     {
         System.out.println("Inside oauth2Callback-----------");
         com.google.api.services.calendar.model.Events eventList;
@@ -166,7 +166,7 @@ public class GoogleCalController
         
         System.out.println("cal message:" + message);
         
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return new ResponseEntity<>(mv, HttpStatus.OK);
     }
     
     private List<EventEntity> getCalendarEvents(List<Event> events)
