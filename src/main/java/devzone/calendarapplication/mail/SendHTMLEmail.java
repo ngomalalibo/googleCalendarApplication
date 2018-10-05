@@ -157,8 +157,9 @@ public class SendHTMLEmail {
         Message msg = new MimeMessage(session);
         
         msg.setFrom(new InternetAddress(userName));
-        InternetAddress[] toAddresses = { new InternetAddress(toAddress) };
-        msg.setRecipients(Message.RecipientType.TO, toAddresses);
+        /*InternetAddress[] toAddresses = { new InternetAddress(toAddress) };
+        msg.setRecipients(Message.RecipientType.TO, toAddresses);*/
+        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
         msg.setFrom(new InternetAddress(from));
         msg.setSentDate(new Date());
         // set plain text message
