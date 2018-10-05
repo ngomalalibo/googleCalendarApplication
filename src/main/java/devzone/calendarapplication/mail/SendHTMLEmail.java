@@ -153,7 +153,7 @@ public class SendHTMLEmail {
         Session session = Session.getInstance(properties, auth);
         
         // creates a new e-mail message
-        Message msg = new MimeMessage(session);
+        MimeMessage msg = new MimeMessage(session);
         
         msg.setFrom(new InternetAddress(userName));
         /*InternetAddress[] toAddresses = { new InternetAddress(toAddress) };
