@@ -141,16 +141,17 @@ public class SendHTMLEmail {
         properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.port", port);
         properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.socketFactory.port", "465");
         properties.put("mail.smtp.starttls.enable", "true");
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         
         // creates a new session with an authenticator
-        Authenticator auth = new Authenticator() {
-            public PasswordAuthentication getPasswordAuthentication() {
+    
+        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(userName, password);
             }
-        };
-        
-        Session session = Session.getInstance(properties, auth);
+        });
         
         // creates a new e-mail message
         MimeMessage msg = new MimeMessage(session);
@@ -169,13 +170,12 @@ public class SendHTMLEmail {
         msg.setContent("<h1>This is actual message</h1>", "text/html");
         
         // sends the e-mail
-        Transport.send(msg);
-        /*Transport transport = session.getTransport("smtps");
-        transport.connect(host, Integer.valueOf(d_port), username, password);
-        transport.sendMessage(message, message.getAllRecipients());
-        transport.close();*/
+        //Transport.send(msg);
+        Transport transport = session.getTransport("smtp");
+        transport.connect(host, Integer.valueOf(port), username, password);
+        transport.sendMessage(msg, msg.getAllRecipients());
+        transport.close();
         //Transport.send(message);
         System.out.println("Login Successful....");
-        
     }
 }
