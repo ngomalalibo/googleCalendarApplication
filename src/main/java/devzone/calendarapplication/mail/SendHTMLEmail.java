@@ -3,10 +3,7 @@ package devzone.calendarapplication.mail;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
@@ -26,8 +23,7 @@ public class SendHTMLEmail {
     
         // Sender's email ID needs to be mentioned
         String from = username,
-                d_port  = "465",
-                d_host = "smtp.gmail.com";
+                d_port  = "465";
     
         // Assuming you are sending email from localhost
         String host = "smtp.gmail.com";
@@ -39,11 +35,20 @@ public class SendHTMLEmail {
         properties.setProperty("mail.smtp.host", host);
         properties.setProperty("mail.smtp.user", username);
         properties.setProperty("mail.smtp.password", password);
-        properties.setProperty("mail.smtp.port", d_port);
+        //properties.setProperty("mail.smtp.port", d_port);
         properties.setProperty("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
     
         // Get the default Session object.
-        Session session = Session.getDefaultInstance(properties);
+        //Session session = Session.getDefaultInstance(properties);
+    
+        Session session = Session.getDefaultInstance(properties, new javax.mail.Authenticator()
+        {
+            protected PasswordAuthentication getPasswordAuthentication()
+            {
+                return new PasswordAuthentication(username,password);
+            }
+        });
     
         try {
             // Create a default MimeMessage object.
@@ -62,8 +67,8 @@ public class SendHTMLEmail {
             message.setContent("<h1>This is actual message</h1>", "text/html");
         
             // Send message
-            Transport transport = session.getTransport("smtps");
-            transport.connect(d_host, Integer.valueOf(d_port), username, password);
+            Transport transport = session.getTransport("smtp");
+            transport.connect(host, Integer.valueOf(d_port), username, password);
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
             //Transport.send(message);
@@ -80,21 +85,33 @@ public class SendHTMLEmail {
         String to = username;
         
         // Sender's email ID needs to be mentioned
-        String from = username;
-        
+        String from = username,
+                d_port  = "465";
+    
         // Assuming you are sending email from localhost
-        String host = "localhost";
-        
+        String host = "smtp.gmail.com";
+    
         // Get system properties
         Properties properties = System.getProperties();
-        
+    
         // Setup mail server
         properties.setProperty("mail.smtp.host", host);
-        properties.setProperty("mail.user", username);
-        properties.setProperty("mail.password", password);
-        
+        properties.setProperty("mail.smtp.user", username);
+        properties.setProperty("mail.smtp.password", password);
+        //properties.setProperty("mail.smtp.port", d_port);
+        properties.setProperty("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+    
         // Get the default Session object.
-        Session session = Session.getDefaultInstance(properties);
+        //Session session = Session.getDefaultInstance(properties);
+    
+        Session session = Session.getDefaultInstance(properties, new javax.mail.Authenticator()
+        {
+            protected PasswordAuthentication getPasswordAuthentication()
+            {
+                return new PasswordAuthentication(username,password);
+            }
+        });
         
         try {
             // Create a default MimeMessage object.
@@ -107,13 +124,16 @@ public class SendHTMLEmail {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             
             // Set Subject: header field
-            message.setSubject("Logout alert. Successful login to calendar App!");
+            message.setSubject("Logout alert. Successful logout to calendar App!");
             
             // Send the actual HTML message, as big as you like
             message.setContent("<h1>This is actual message</h1>", "text/html");
             
             // Send message
-            Transport.send(message);
+            Transport transport = session.getTransport("smtp");
+            transport.connect(host, Integer.valueOf(d_port), username, password);
+            transport.sendMessage(message, message.getAllRecipients());
+            transport.close();
             System.out.println("Logout success....");
         } catch (MessagingException mex) {
             mex.printStackTrace();
