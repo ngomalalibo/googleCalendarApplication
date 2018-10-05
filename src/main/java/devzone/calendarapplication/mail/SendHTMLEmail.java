@@ -40,6 +40,7 @@ public class SendHTMLEmail {
         properties.setProperty("mail.smtp.user", username);
         properties.setProperty("mail.smtp.password", password);
         properties.setProperty("mail.smtp.port", d_port);
+        properties.setProperty("mail.smtp.auth", "true");
     
         // Get the default Session object.
         Session session = Session.getDefaultInstance(properties);
