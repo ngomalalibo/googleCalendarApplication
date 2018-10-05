@@ -272,7 +272,7 @@ public class GoogleCalController
         return modelAndView;
     }*/
     
-    @RequestMapping(value = "/user")
+    /*@RequestMapping(value = "/user")
     public Principal user(Principal principal)
     {
         return principal;
@@ -285,11 +285,11 @@ public class GoogleCalController
         return users;
     }
     
-    @PutMapping
-    public void insert(@RequestBody User user)
-    {
-        this.userRepository.insert(user);
-    }
+//    @PutMapping
+//    public void insert(@RequestBody User user)
+//    {
+//        this.userRepository.insert(user);
+//    }
     
     @PostMapping
     public void update(@RequestBody User user)
@@ -306,11 +306,11 @@ public class GoogleCalController
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public String signup(@ModelAttribute("user") User user)
     {
-        /*BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));*/
+        *//*BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));*//*
         //userRepositoryImpl.signup(user);
         return "redirect:../user.html";
-    }
+    }*/
     
     @GetMapping("/logout")
     public ModelAndView logout(HttpSession session)
