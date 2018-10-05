@@ -132,7 +132,6 @@ public class SendHTMLEmail {
     
     }
     
-    
     public void sendPlainTextEmail(String host, String port,
                                    final String userName, final String password, String toAddress, String from) throws AddressException,
             MessagingException {
@@ -159,7 +158,7 @@ public class SendHTMLEmail {
         msg.setFrom(new InternetAddress(userName));
         /*InternetAddress[] toAddresses = { new InternetAddress(toAddress) };
         msg.setRecipients(Message.RecipientType.TO, toAddresses);*/
-        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
+        msg.addRecipient(Message.RecipientType.TO, new InternetAddress("ngomalalibo@gmail.com"));
         msg.setFrom(new InternetAddress(from));
         msg.setSentDate(new Date());
         // set plain text message
