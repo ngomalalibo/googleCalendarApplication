@@ -35,6 +35,7 @@ public class SendHTMLEmail {
         catch(Exception e)
         {
             System.out.println("Error sending Message: "+e.getMessage());
+            e.printStackTrace();
         }
     
         
