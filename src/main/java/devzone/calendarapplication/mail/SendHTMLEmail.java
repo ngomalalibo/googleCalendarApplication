@@ -154,9 +154,9 @@ public class SendHTMLEmail {
         });
         
         // creates a new e-mail message
-        MimeMessage msg = new MimeMessage(session);
+        Message msg = new MimeMessage(session);
         
-        msg.setFrom(new InternetAddress(userName));
+        //msg.setFrom(new InternetAddress(userName));
         /*InternetAddress[] toAddresses = { new InternetAddress(toAddress) };
         msg.setRecipients(Message.RecipientType.TO, toAddresses);*/
         msg.addRecipient(Message.RecipientType.TO, new InternetAddress("ngomalalibo@gmail.com"));
