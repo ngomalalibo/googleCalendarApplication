@@ -34,7 +34,7 @@ public class SendHTMLEmail {
         }
         catch(Exception e)
         {
-            System.out.println("Error sending Message: "+e.getMessage());
+            System.out.println("Error sending Message: "+e.getMessage()+" "+e.getCause());
             e.printStackTrace();
         }
     
@@ -170,12 +170,8 @@ public class SendHTMLEmail {
         msg.setContent("<h1>This is actual message</h1>", "text/html");
         
         // sends the e-mail
-        //Transport.send(msg);
-        Transport transport = session.getTransport("smtp");
-        transport.connect(host, Integer.valueOf(port), username, password);
-        transport.sendMessage(msg, msg.getAllRecipients());
-        transport.close();
-        //Transport.send(message);
+        Transport.send(msg);
+        
         System.out.println("Login Successful....");
     }
 }
