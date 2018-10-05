@@ -25,7 +25,9 @@ public class SendHTMLEmail {
         String to = username;
     
         // Sender's email ID needs to be mentioned
-        String from = username;
+        String from = username,
+                d_port  = "465",
+                d_host = "smtp.gmail.com";
     
         // Assuming you are sending email from localhost
         String host = "smtp.gmail.com";
@@ -35,8 +37,9 @@ public class SendHTMLEmail {
     
         // Setup mail server
         properties.setProperty("mail.smtp.host", host);
-        properties.setProperty("mail.user", username);
-        properties.setProperty("mail.password", password);
+        properties.setProperty("mail.smtp.user", username);
+        properties.setProperty("mail.smtp.password", password);
+        properties.setProperty("mail.smtp.port", d_port);
     
         // Get the default Session object.
         Session session = Session.getDefaultInstance(properties);
@@ -58,7 +61,11 @@ public class SendHTMLEmail {
             message.setContent("<h1>This is actual message</h1>", "text/html");
         
             // Send message
-            Transport.send(message);
+            Transport transport = session.getTransport("smtps");
+            transport.connect(d_host, Integer.valueOf(d_port), username, password);
+            transport.sendMessage(message, message.getAllRecipients());
+            transport.close();
+            //Transport.send(message);
             System.out.println("Login Successful....");
         } catch (MessagingException mex) {
             mex.printStackTrace();

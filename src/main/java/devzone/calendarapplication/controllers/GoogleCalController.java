@@ -129,14 +129,14 @@ public class GoogleCalController
         return new ResponseEntity<>(modelAndView, HttpStatus.OK);
     }
     
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/login/google", method = RequestMethod.GET)
     public RedirectView googleConnectionStatus(HttpServletRequest request) throws Exception
     {
         System.out.println("Inside googleConnectionStatus----------");
         return new RedirectView(authorize());
     }
     
-    @RequestMapping(value = "/login", method = RequestMethod.GET, params = "code")
+    @RequestMapping(value = "/login/google", method = RequestMethod.GET, params = "code")
     public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code)
     {
         System.out.println("Inside oauth2Callback-----------");
@@ -164,7 +164,7 @@ public class GoogleCalController
         }
         mv.setViewName("welcome");
         
-        System.out.println("cal message:" + message);
+        System.out.println("cal message: " + message);
     
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
