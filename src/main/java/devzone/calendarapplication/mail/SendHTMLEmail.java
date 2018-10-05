@@ -1,11 +1,14 @@
 package devzone.calendarapplication.mail;
 
+import jdk.internal.org.objectweb.asm.TypeReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.mail.*;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Date;
 import java.util.Properties;
 
 @Service
@@ -16,20 +19,32 @@ public class SendHTMLEmail {
     @Value("${google.mail.password}")
     String password;
     
+    String host = "smtp.gmail.com";
+    String port = "587"; //d_port  = "465";
+    
+    // outgoing message information
+    String subject = "Hello my friend";
+    String message = "Hi guy, Hope you are doing well. Duke.";
+    
+    String to = username;
+    
+    // Sender's email ID needs to be mentioned
+    String from = username;
+    
     public void loginMail()
     {
-        // Recipient's email ID needs to be mentioned.
-        String to = username;
+        try
+        {
+            sendPlainTextEmail(host, port, username, password, to);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
     
-        // Sender's email ID needs to be mentioned
-        String from = username,
-                d_port  = "465";
-    
-        // Assuming you are sending email from localhost
-        String host = "smtp.gmail.com";
-    
+        
         // Get system properties
-        Properties properties = System.getProperties();
+        /*Properties properties = System.getProperties();
     
         // Setup mail server
         properties.setProperty("mail.smtp.host", host);
@@ -51,36 +66,8 @@ public class SendHTMLEmail {
                 return new PasswordAuthentication(username,password);
             }
         });
-        session.setDebug(true);
+        session.setDebug(true);*/
     
-        try {
-            // Create a default MimeMessage object.
-            MimeMessage message = new MimeMessage(session);
-        
-            // Set From: header field of the header.
-            message.setFrom(new InternetAddress(from));
-        
-            // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-        
-            // Set Subject: header field
-            message.setSubject("Login alert. Successful login to calendar App!");
-            
-            message.setText("Login alert: Message! ");
-        
-            // Send the actual HTML message, as big as you like
-            message.setContent("<h1>This is actual message</h1>", "text/html");
-        
-            // Send message
-            Transport transport = session.getTransport("smtps");
-            transport.connect(host, Integer.valueOf(d_port), username, password);
-            transport.sendMessage(message, message.getAllRecipients());
-            transport.close();
-            //Transport.send(message);
-            System.out.println("Login Successful....");
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
-        }
     }
     
     
@@ -147,5 +134,51 @@ public class SendHTMLEmail {
     
     public static void main(String [] args) {
     
+    }
+    
+    
+    public void sendPlainTextEmail(String host, String port,
+                                   final String userName, final String password, String toAddress) throws AddressException,
+            MessagingException {
+        
+        // sets SMTP server properties
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", port);
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+        
+        // creates a new session with an authenticator
+        Authenticator auth = new Authenticator() {
+            public PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(userName, password);
+            }
+        };
+        
+        Session session = Session.getInstance(properties, auth);
+        
+        // creates a new e-mail message
+        Message msg = new MimeMessage(session);
+        
+        msg.setFrom(new InternetAddress(userName));
+        InternetAddress[] toAddresses = { new InternetAddress(toAddress) };
+        msg.setRecipients(Message.RecipientType.TO, toAddresses);
+        msg.setSentDate(new Date());
+        // set plain text message
+        msg.setText("Login alert: Message! ");
+    
+        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+        msg.setSubject("Login alert. Successful login to calendar App!");
+        msg.setContent("<h1>This is actual message</h1>", "text/html");
+        
+        // sends the e-mail
+        Transport.send(msg);
+        /*Transport transport = session.getTransport("smtps");
+        transport.connect(host, Integer.valueOf(d_port), username, password);
+        transport.sendMessage(message, message.getAllRecipients());
+        transport.close();*/
+        //Transport.send(message);
+        System.out.println("Login Successful....");
+        
     }
 }
