@@ -21,10 +21,6 @@ public class SendHTMLEmail {
     String host = "smtp.gmail.com";
     String port = "587"; //d_port  = "465";
     
-    // outgoing message information
-    String subject = "Hello my friend";
-    String message = "Hi guy, Hope you are doing well. Duke.";
-    
     String to = username;
     
     // Sender's email ID needs to be mentioned
@@ -34,11 +30,11 @@ public class SendHTMLEmail {
     {
         try
         {
-            sendPlainTextEmail(host, port, username, password, to);
+            sendPlainTextEmail(host, port, username, password, to, from);
         }
         catch(Exception e)
         {
-            System.out.println(e.getMessage());
+            System.out.println("Error sending Message: "+e.getMessage());
         }
     
         
@@ -137,7 +133,7 @@ public class SendHTMLEmail {
     
     
     public void sendPlainTextEmail(String host, String port,
-                                   final String userName, final String password, String toAddress) throws AddressException,
+                                   final String userName, final String password, String toAddress, String from) throws AddressException,
             MessagingException {
         
         // sets SMTP server properties
@@ -162,11 +158,12 @@ public class SendHTMLEmail {
         msg.setFrom(new InternetAddress(userName));
         InternetAddress[] toAddresses = { new InternetAddress(toAddress) };
         msg.setRecipients(Message.RecipientType.TO, toAddresses);
+        msg.setFrom(new InternetAddress(from));
         msg.setSentDate(new Date());
         // set plain text message
         msg.setText("Login alert: Message! ");
     
-        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+        //msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
         msg.setSubject("Login alert. Successful login to calendar App!");
         msg.setContent("<h1>This is actual message</h1>", "text/html");
         
