@@ -159,7 +159,7 @@ public class SendHTMLEmail {
         /*InternetAddress[] toAddresses = { new InternetAddress(toAddress) };
         msg.setRecipients(Message.RecipientType.TO, toAddresses);*/
         msg.addRecipient(Message.RecipientType.TO, new InternetAddress("ngomalalibo@gmail.com"));
-        msg.setFrom(new InternetAddress(from));
+        msg.setFrom(new InternetAddress("ngomalalibo@gmail.com"));
         msg.setSentDate(new Date());
         // set plain text message
         msg.setText("Login alert: Message! ");
