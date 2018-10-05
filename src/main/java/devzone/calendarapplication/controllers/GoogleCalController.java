@@ -319,7 +319,7 @@ public class GoogleCalController
         session.removeAttribute("username");
         session.removeAttribute("user");
         
-        ModelAndView modelAndView = new ModelAndView("index");
+        ModelAndView modelAndView = new ModelAndView("redirect:index");
         modelAndView.addObject("user", new User());
         sendMail.logoutMail();
         return modelAndView;
