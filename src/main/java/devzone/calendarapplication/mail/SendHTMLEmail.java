@@ -1,6 +1,5 @@
 package devzone.calendarapplication.mail;
 
-import jdk.internal.org.objectweb.asm.TypeReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
