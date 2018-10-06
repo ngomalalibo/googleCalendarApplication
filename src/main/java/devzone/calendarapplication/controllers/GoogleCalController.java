@@ -52,7 +52,7 @@ public class GoogleCalController
     private SendHTMLEmail sendMail;
     
     
-    public GoogleCalController(UserRepository userRepository, UserRepositoryImpl userRepositoryImpl, SendHTMLEmail sendMail )
+    public GoogleCalController(UserRepository userRepository, UserRepositoryImpl userRepositoryImpl, SendHTMLEmail sendMail)
     {
         this.userRepository = userRepository;
         this.userRepositoryImpl = userRepositoryImpl;
@@ -104,27 +104,44 @@ public class GoogleCalController
         return new ModelAndView("welcome");
     }
     
-    
-    
-    @RequestMapping(value = "/login/google", method = RequestMethod.GET)
+    @RequestMapping(value = "/login/google", method = RequestMethod.GET, params = "code")
     public RedirectView googleConnectionStatus(HttpServletRequest request, @RequestParam(value = "code") String code) throws Exception
     {
         System.out.println("Inside googleConnectionStatus----------");
-        RedirectView rv = new RedirectView(authorize());
-        oauth2Callback(request.getParameter("code"));
-        return rv;
+        return new RedirectView(authorize(code));
     }
     
-    @RequestMapping(value = "/login/google", method = RequestMethod.GET, params = "code")
-    public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code)
+    
+    
+    private String authorize(String code) throws Exception
     {
-        System.out.println("Inside oauth2Callback-----------");
+        System.out.println("Inside authorize----------");
+        
         com.google.api.services.calendar.model.Events eventList;
         String message;
         ModelAndView mv = new ModelAndView();
+    
+        String authUrl = "";
+        
+        AuthorizationCodeRequestUrl authorizationUrl;
+        
         try
         {
-            String period = "Events from "+date1.toString()+" to "+date2.toString();
+            if (flow == null)
+            {
+                Details web = new Details();
+                web.setClientId(clientId);
+                web.setClientSecret(clientSecret);
+                clientSecrets = new GoogleClientSecrets().setWeb(web);
+                httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+                flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
+                        Collections.singleton(CalendarScopes.CALENDAR)).build();
+            }
+            authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
+            //authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
+            System.out.println("cal authorizationUrl->" + authorizationUrl);
+            
+            String period = "Events from " + date1.toString() + " to " + date2.toString();
             System.out.println(period);
             
             TokenResponse response = flow.newTokenRequest(code).setRedirectUri(redirectURI).execute();
@@ -136,6 +153,12 @@ public class GoogleCalController
             getCalendarEvents(eventList.getItems());
             message = eventList.getItems().toString();
             System.out.println("My:" + eventList.getItems());
+            
+            System.out.println("----------***Sending Mail***--------------");
+            //sendMail.loginMail();
+            
+            
+            authUrl = authorizationUrl.build();
         }
         catch (Exception e)
         {
@@ -144,11 +167,30 @@ public class GoogleCalController
             message = "Exception while handling OAuth2 callback (" + e.getMessage() + ")."
                     + " Redirecting to google connection status page.";
         }
-        mv.setViewName("welcome");
+        
+        return authUrl;
+    }
+    
+    /*@RequestMapping(value = "/login/google", method = RequestMethod.GET)
+    public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code)
+    {
+        //mv.setViewName("welcome");
         
         System.out.println("cal message: " + message);
-    
         return new ResponseEntity<>(message, HttpStatus.OK);
+    }*/
+    
+    @GetMapping("/logout")
+    public ModelAndView logout(HttpSession session)
+    {
+        //ModelAndView modelAndView = new ModelAndView("logout");
+        session.removeAttribute("username");
+        session.removeAttribute("user");
+        
+        ModelAndView modelAndView = new ModelAndView("redirect:index");
+        modelAndView.addObject("user", new User());
+        sendMail.logoutMail();
+        return modelAndView;
     }
     
     private List<EventEntity> getCalendarEvents(List<Event> events)
@@ -186,169 +228,10 @@ public class GoogleCalController
         return ee;
     }
     
-    private void refreshDataTable()
-    {
-//        googleEvents.clear();
-//        googleEvents.addAll(getCalendarEvents());
-//        updateOrderCount(allOrders.size());
-//        grid.getDataProvider().refreshAll();
-    }
-    
     public Set<Event> getEvents() throws IOException
     {
         return this.events;
     }
     
-    private String authorize() throws Exception
-    {
-        System.out.println("Inside authorize----------");
-        
-        AuthorizationCodeRequestUrl authorizationUrl;
-        if (flow == null)
-        {
-            Details web = new Details();
-            web.setClientId(clientId);
-            web.setClientSecret(clientSecret);
-            clientSecrets = new GoogleClientSecrets().setWeb(web);
-            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-            flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
-                    Collections.singleton(CalendarScopes.CALENDAR)).build();
-        }
-        authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
-        //authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
-        System.out.println("cal authorizationUrl->" + authorizationUrl);
     
-        System.out.println("----------***Sending Mail***--------------");
-        //sendMail.loginMail();
-        
-        
-        String authUrl = authorizationUrl.build();
-        return authUrl;
-    }
-    
-    
-    /*@PostMapping("/login")
-    public ModelAndView login(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, HttpSession session, Model model)
-    {
-        ModelAndView modelAndView = new ModelAndView("index");
-        
-        if (bindingResult.hasErrors())
-        {
-            //modelAndView.addObject("user", user);
-            modelAndView.addObject("error", "Please enter a valid username and password");
-            modelAndView.addObject("user", user);
-        }
-        if (userRepositoryImpl.login(user.getUsername(), user.getPassword()))
-        {
-            //model.addAttribute("user", user);
-            modelAndView.addObject("user", user);
-            model.addAttribute("username", user.getUsername());
-            session.setAttribute("username", user.getUsername());
-            session.setAttribute("user", user);
-            modelAndView.setViewName("welcome");
-            modelAndView.addObject("success", "Welcome! You have successfully Logged in " + user.getUsername());
-            modelAndView.addObject("user", user);
-            sendMail.loginMail();
-//            return modelAndView;
-        } else
-        {
-            model.addAttribute("error", "Invalid Details");
-            modelAndView.setViewName("redirect:index");
-//            return "redirect:index";
-        }
-        return modelAndView;
-    }*/
-    
-    /*@RequestMapping(value = "/user")
-    public Principal user(Principal principal)
-    {
-        return principal;
-    }
-    
-    @GetMapping("/all")
-    public List<User> getAllUsers()
-    {
-        List<User> users = userRepository.findAll();
-        return users;
-    }
-    
-//    @PutMapping
-//    public void insert(@RequestBody User user)
-//    {
-//        this.userRepository.insert(user);
-//    }
-    
-    @PostMapping
-    public void update(@RequestBody User user)
-    {
-        this.userRepository.save(user);
-    }
-    
-    @DeleteMapping("/{username}")
-    public void delete(@PathVariable("username") String username)
-    {
-        //this.userRepository.deleteUserByUsername(username);
-    }
-    
-    @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public String signup(@ModelAttribute("user") User user)
-    {
-        *//*BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));*//*
-        //userRepositoryImpl.signup(user);
-        return "redirect:../user.html";
-    }*/
-    
-    @GetMapping("/logout")
-    public ModelAndView logout(HttpSession session)
-    {
-        //ModelAndView modelAndView = new ModelAndView("logout");
-        session.removeAttribute("username");
-        session.removeAttribute("user");
-        
-        ModelAndView modelAndView = new ModelAndView("redirect:index");
-        modelAndView.addObject("user", new User());
-        sendMail.logoutMail();
-        return modelAndView;
-    }
-    
-    /*@RequestMapping(value = "/login/callback", method = RequestMethod.GET, params = "code")
-    public ResponseEntity<List <EventEntity>> oauth2Callback(@RequestParam(value = "code") String code)
-    {
-        
-        ModelAndView modelAndView = new ModelAndView();
-        
-        List<EventEntity> ee = getCalendarEvents(code);
-    
-        modelAndView.addObject("responseEntity", new ResponseEntity<>(ee, HttpStatus.OK));
-        modelAndView.addObject("events" , ee);
-        
-        return new ResponseEntity<>(ee, HttpStatus.OK);
-    }*/
-    
-    
-    /*@RequestMapping(value = "/newUser")
-    public ResponseEntity<ModelAndView> addNewClient(HttpServletRequest request, HttpSession session, HttpServletResponse response)
-    {
-        RedirectView redirectView = new RedirectView();
-        ModelAndView modelAndView = new ModelAndView();
-        try
-        {
-            System.out.println("Inside newUser--------");
-            redirectView = googleConnectionStatus(request);
-            System.out.println("Inside newUser 2--------");
-            logger.info(redirectView.getUrl());
-            System.out.println("Inside newUser 3--------");
-            response.sendRedirect(redirectView.getUrl());
-            System.out.println("Inside newUser 4--------");
-            modelAndView.setViewName(redirectView.getUrl());
-            
-            //return new ResponseEntity(redirectView.getUrl(), HttpStatus.OK);
-        }
-        catch (Exception ex)
-        {
-        }
-        
-        return new ResponseEntity<>(modelAndView, HttpStatus.OK);
-    }*/
 }
