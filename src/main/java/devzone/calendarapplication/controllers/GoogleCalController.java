@@ -145,6 +145,9 @@ public class GoogleCalController
         ModelAndView mv = new ModelAndView();
         try
         {
+            String period = "Events from "+date1.toString()+" to "+date2.toString();
+            System.out.println(period);
+            
             TokenResponse response = flow.newTokenRequest(code).setRedirectUri(redirectURI).execute();
             credential = flow.createAndStoreCredential(response, "userID");
             client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
