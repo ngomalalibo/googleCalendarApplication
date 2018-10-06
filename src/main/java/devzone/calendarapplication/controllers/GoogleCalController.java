@@ -110,10 +110,12 @@ public class GoogleCalController
     public RedirectView googleConnectionStatus(HttpServletRequest request, @RequestParam(value = "code") String code) throws Exception
     {
         System.out.println("Inside googleConnectionStatus----------");
-        return new RedirectView(authorize(code));
+        RedirectView rv = new RedirectView(authorize());
+        oauth2Callback(code);
+        return rv;
     }
     
-   /* @RequestMapping(value = "/login/google", method = RequestMethod.GET, params = "code")
+    //@RequestMapping(value = "/login/google", method = RequestMethod.GET, params = "code")
     public ResponseEntity<String> oauth2Callback(@RequestParam(value = "code") String code)
     {
         System.out.println("Inside oauth2Callback-----------");
@@ -147,7 +149,7 @@ public class GoogleCalController
         System.out.println("cal message: " + message);
     
         return new ResponseEntity<>(message, HttpStatus.OK);
-    }*/
+    }
     
     private List<EventEntity> getCalendarEvents(List<Event> events)
     {
@@ -197,7 +199,7 @@ public class GoogleCalController
         return this.events;
     }
     
-    private String authorize(String code) throws Exception
+    private String authorize() throws Exception
     {
         System.out.println("Inside authorize----------");
         
@@ -216,38 +218,9 @@ public class GoogleCalController
         //authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
         System.out.println("cal authorizationUrl->" + authorizationUrl);
     
-        System.out.println("Inside oauth2Callback-----------");
-        com.google.api.services.calendar.model.Events eventList;
-        String message;
-        ModelAndView mv = new ModelAndView();
-        try
-        {
-            String period = "Events from "+date1.toString()+" to "+date2.toString();
-            System.out.println(period);
-        
-            TokenResponse response = flow.newTokenRequest(code).setRedirectUri(redirectURI).execute();
-            credential = flow.createAndStoreCredential(response, "userID");
-            client = new com.google.api.services.calendar.Calendar.Builder(httpTransport, JSON_FACTORY, credential)
-                    .setApplicationName(APPLICATION_NAME).build();
-            Events events = client.events();
-            eventList = events.list("primary").setTimeMin(date1).setTimeMax(date2).execute();
-            mv.addObject("events", getCalendarEvents(eventList.getItems()));
-            message = eventList.getItems().toString();
-            System.out.println("My Events:" + message);
-        }
-        catch (Exception e)
-        {
-            logger.warn("Exception while handling OAuth2 callback (" + e.getMessage() + ")."
-                    + " Redirecting to google connection status page.");
-            message = "Exception while handling OAuth2 callback (" + e.getMessage() + ")."
-                    + " Redirecting to google connection status page.";
-        }
-        mv.setViewName("welcome");
-    
         System.out.println("----------***Sending Mail***--------------");
         //sendMail.loginMail();
         
-        mv.addObject("rEntity", new ResponseEntity<>(message, HttpStatus.OK));
         
         String authUrl = authorizationUrl.build();
         return authUrl;
