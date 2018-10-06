@@ -235,7 +235,7 @@ public class GoogleCalController
         //authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
         System.out.println("cal authorizationUrl->" + authorizationUrl);
         System.out.println("----------***Sending Mail***--------------");
-        sendMail.loginMail();
+        //sendMail.loginMail();
         return authorizationUrl.build();
     }
     

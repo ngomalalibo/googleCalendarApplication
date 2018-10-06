@@ -11,7 +11,8 @@ import java.util.Date;
 import java.util.Properties;
 
 @Service
-public class SendHTMLEmail {
+public class SendHTMLEmail
+{
     
     @Value("${google.mail.username}")
     String username;
@@ -19,7 +20,7 @@ public class SendHTMLEmail {
     String password;
     
     String host = "smtp.gmail.com";
-    String port = "587"; //d_port  = "465";
+    String port = "465"; //d_port  = "465";
     
     String to = username;
     
@@ -32,12 +33,12 @@ public class SendHTMLEmail {
         {
             sendPlainTextEmail(host, port, username, password, to, from);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            System.out.println("Error sending Message: "+e.getMessage()+" "+e.getCause());
+            System.out.println("Error sending Message: " + e.getMessage() + " " + e.getCause());
             e.printStackTrace();
         }
-    
+        
         
         // Get system properties
         /*Properties properties = System.getProperties();
@@ -63,7 +64,7 @@ public class SendHTMLEmail {
             }
         });
         session.setDebug(true);*/
-    
+        
     }
     
     
@@ -74,14 +75,14 @@ public class SendHTMLEmail {
         
         // Sender's email ID needs to be mentioned
         String from = username,
-                d_port  = "465";
-    
+                d_port = "465";
+        
         // Assuming you are sending email from localhost
         String host = "smtp.gmail.com";
-    
+        
         // Get system properties
         Properties properties = System.getProperties();
-    
+        
         // Setup mail server
         properties.setProperty("mail.smtp.host", host);
         properties.setProperty("mail.smtp.user", username);
@@ -89,19 +90,20 @@ public class SendHTMLEmail {
         //properties.setProperty("mail.smtp.port", d_port);
         properties.setProperty("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
-    
+        
         // Get the default Session object.
         //Session session = Session.getDefaultInstance(properties);
-    
+        
         Session session = Session.getDefaultInstance(properties, new javax.mail.Authenticator()
         {
             protected PasswordAuthentication getPasswordAuthentication()
             {
-                return new PasswordAuthentication(username,password);
+                return new PasswordAuthentication(username, password);
             }
         });
         
-        try {
+        try
+        {
             // Create a default MimeMessage object.
             MimeMessage message = new MimeMessage(session);
             
@@ -123,32 +125,40 @@ public class SendHTMLEmail {
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
             System.out.println("Logout success....");
-        } catch (MessagingException mex) {
+        }
+        catch (MessagingException mex)
+        {
             mex.printStackTrace();
         }
     }
     
-    public static void main(String [] args) {
+    public static void main(String[] args)
+    {
+    
     
     }
     
     public void sendPlainTextEmail(String host, String port,
                                    final String userName, final String password, String toAddress, String from) throws AddressException,
-            MessagingException {
-        
+            MessagingException
+    {
         // sets SMTP server properties
         Properties properties = new Properties();
         properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.port", port);
+        properties.put("mail.smtp.user", userName);
+        properties.put("mail.smtp.password", password);
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.socketFactory.port", "465");
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         
         // creates a new session with an authenticator
-    
-        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
+        
+        Session session = Session.getInstance(properties, new javax.mail.Authenticator()
+        {
+            protected PasswordAuthentication getPasswordAuthentication()
+            {
                 return new PasswordAuthentication(userName, password);
             }
         });
@@ -156,16 +166,12 @@ public class SendHTMLEmail {
         // creates a new e-mail message
         Message msg = new MimeMessage(session);
         
-        //msg.setFrom(new InternetAddress(userName));
-        /*InternetAddress[] toAddresses = { new InternetAddress(toAddress) };
-        msg.setRecipients(Message.RecipientType.TO, toAddresses);*/
-        msg.addRecipient(Message.RecipientType.TO, new InternetAddress("ngomalalibo@gmail.com"));
+        msg.addRecipient(Message.RecipientType.TO, new InternetAddress("ngomalalibo@yahoo.com"));
         msg.setFrom(new InternetAddress("ngomalalibo@gmail.com"));
         msg.setSentDate(new Date());
         // set plain text message
         msg.setText("Login alert: Message! ");
-    
-        //msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+        
         msg.setSubject("Login alert. Successful login to calendar App!");
         msg.setContent("<h1>This is actual message</h1>", "text/html");
         
@@ -173,5 +179,48 @@ public class SendHTMLEmail {
         Transport.send(msg);
         
         System.out.println("Login Successful....");
+    }
+    
+    public void sendMailUntested()
+    {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp-relay.gmail.com");
+        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.user", username);
+        props.put("mail.smtp.password", password);
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator()
+                {
+                    protected PasswordAuthentication getPasswordAuthentication()
+                    {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+        
+        try
+        {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(username));
+            message.setSubject("Testing Subject");
+            message.setText("Dear Mail Crawler,"
+                    + "\n\n No spam to my email, please!");
+            
+            Transport.send(message);
+            
+            System.out.println("Mail Sent");
+            
+        }
+        catch (MessagingException e)
+        {
+            System.out.println("Error sending message: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
