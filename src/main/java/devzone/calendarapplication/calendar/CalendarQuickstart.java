@@ -30,6 +30,9 @@ public class CalendarQuickstart
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     
+    private static Credential credential;
+    private static com.google.api.services.calendar.Calendar client;
+    
     /**
      * Global instance of the scopes required by this quickstart.
      * If modifying these scopes, delete your previously saved tokens/ folder.
@@ -63,11 +66,12 @@ public class CalendarQuickstart
     }
     
     //public static void main(String... args) throws IOException, GeneralSecurityException
-    public static List<Event> getEvents() throws IOException, GeneralSecurityException
+    public static List<Event> getEvents(Credential credential) throws IOException, GeneralSecurityException
     {
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+        
+        Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
         

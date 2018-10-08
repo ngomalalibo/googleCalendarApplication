@@ -176,23 +176,38 @@ public class GoogleCalController
                 web.setClientSecret(clientSecret);
                 clientSecrets = new GoogleClientSecrets().setWeb(web);
                 httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-                flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
-                        Collections.singleton(CalendarScopes.CALENDAR)).build();
+//                flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
+//                        Collections.singleton(CalendarScopes.CALENDAR)).build();
+    
+                flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
+                        .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                        .setAccessType("offline")
+                        .build();
+    
+                authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
+                //authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
+                System.out.println("cal authorizationUrl->" + authorizationUrl);
+    
+                authUrl = authorizationUrl.build();
+    
+                // Load client secrets.
+                /*InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+                GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+    
+                // Build flow and trigger user authorization request.
+                GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                        httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
+                        .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                    .setAccessType("offline")
+                        .build();*/
+                credential =  new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
             }
             
-            
-            authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
-            //authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
-            System.out.println("cal authorizationUrl->" + authorizationUrl);
-            
-            List<Event> events = CalendarQuickstart.getEvents();
+            List<Event> events = CalendarQuickstart.getEvents(credential);
     
             List<EventEntity> ee = getCalendarEvents(events);
             
             mv.addObject("ee", ee);
-            
-            authUrl = authorizationUrl.build();
-    
         }
         catch (Exception e)
         {
