@@ -189,7 +189,7 @@ public class GoogleCalController
                         .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                     .setAccessType("offline")
                         .build();
-                //credential =  new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+                credential =  new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
     
                 authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
                 //authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
@@ -198,7 +198,7 @@ public class GoogleCalController
                 authUrl = authorizationUrl.build();
             }
             
-            List<Event> events = CalendarQuickstart.getEvents(new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user"));
+            List<Event> events = CalendarQuickstart.getEvents(credential);
     
             List<EventEntity> ee = getCalendarEvents(events);
             
