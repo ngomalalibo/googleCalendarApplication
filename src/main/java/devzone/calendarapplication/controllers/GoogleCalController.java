@@ -179,6 +179,13 @@ public class GoogleCalController
 //                flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
 //                        Collections.singleton(CalendarScopes.CALENDAR)).build();
     
+                /*flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
+                        .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                        .setAccessType("offline")
+                        .build();*/
+    
+                
+    
                 // Load client secrets.
                 InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
                 GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
@@ -197,8 +204,8 @@ public class GoogleCalController
     
                 authUrl = authorizationUrl.build();
             }
-            List<Event> events = new ArrayList<>();
-            events = CalendarQuickstart.getEvents(credential);
+            
+            List<Event> events = CalendarQuickstart.getEvents(credential);
     
             List<EventEntity> ee = getCalendarEvents(events);
             
@@ -239,7 +246,6 @@ public class GoogleCalController
     
     private List<EventEntity> getCalendarEvents(List<Event> events)
     {
-        System.out.println("Inside getCalendarEvents------------");
         List<EventEntity> ee = new ArrayList<>();
         
         try
