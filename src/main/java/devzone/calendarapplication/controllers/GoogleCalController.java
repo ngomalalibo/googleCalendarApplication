@@ -267,6 +267,10 @@ public class GoogleCalController
                 eventPersist.setDescription(event.getDescription());
                 eventPersist.setLocation(event.getLocation());
                 eventPersist.setSummary(event.getSummary());
+    
+                System.out.println("ColorId: "+eventPersist.getColorId());
+                System.out.println("Description: "+eventPersist.getDescription());
+                System.out.println("Summary: "+eventPersist.getSummary());
                 
                 ee.add(eventPersist);
                 
