@@ -268,15 +268,12 @@ public class GoogleCalController
             
             for (Event event : events)
             {
-                eventPersist.setColorId(event.getColorId());
                 eventPersist.setCreated(event.getCreated());
-                eventPersist.setCreator(event.getCreator());
-                eventPersist.setDescription(event.getDescription());
-                eventPersist.setLocation(event.getLocation());
+                //eventPersist.setLocation(event.getLocation());
                 eventPersist.setSummary(event.getSummary());
     
-                System.out.println("ColorId: "+eventPersist.getColorId());
-                System.out.println("Description: "+eventPersist.getDescription());
+                System.out.println("Created Date: "+eventPersist.getCreated());
+                //System.out.println("Description: "+eventPersist.getDescription());
                 System.out.println("Summary: "+eventPersist.getSummary());
                 
                 ee.add(eventPersist);
