@@ -277,8 +277,11 @@ public class GoogleCalController
                 System.out.println("Summary: "+eventPersist.getSummary());
                 
                 ee.add(eventPersist);
+    
+                System.out.println("Before Persist-------");
                 
                 eventPersist.persist(eventPersist);
+                System.out.println("After Persist-------");
             }
         }
         catch (Exception e)
