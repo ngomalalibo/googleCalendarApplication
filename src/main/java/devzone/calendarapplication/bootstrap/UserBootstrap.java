@@ -1,14 +1,17 @@
 package devzone.calendarapplication.bootstrap;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class UserBootstrap // implements ApplicationListener<ContextRefreshedEvent> (Is called before maven package is executed causing an error) Study Spring initialization diagram
+public class UserBootstrap // implements ApplicationListener<ContextRefreshedEvent>
+//(Is called before maven package is executed causing an error) Study Spring initialization diagram
 {
     
-    /*@Autowired
+   /* @Autowired
     private UserRepository userRepository;
     
     public UserBootstrap(UserRepository userRepository)
@@ -22,7 +25,7 @@ public class UserBootstrap // implements ApplicationListener<ContextRefreshedEve
         //userRepository.deleteAll();
         
         System.out.println("Triggered onApplicationEvent loading Users");
-        initData();
+        //initData();
         System.out.println("Loaded Bootstrap Data");
     }
     
