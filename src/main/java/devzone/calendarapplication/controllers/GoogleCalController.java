@@ -203,11 +203,16 @@ public class GoogleCalController
                 System.out.println("cal authorizationUrl->" + authorizationUrl);
     
                 authUrl = authorizationUrl.build();
+    
+                System.out.println("after authorizationUrl.build()");
             }
             
             List<Event> events = CalendarQuickstart.getEvents(credential);
     
+            System.out.println("CalendarQuickstart.getEvents(credential)---------->");
+    
             List<EventEntity> ee = getCalendarEvents(events);
+            System.out.println("getCalendarEvents(events)---------->");
             
             mv.addObject("ee", ee);
         }
@@ -246,6 +251,8 @@ public class GoogleCalController
     
     private List<EventEntity> getCalendarEvents(List<Event> events)
     {
+    
+        System.out.println("Inside getCalendarEvents--------->");
         List<EventEntity> ee = new ArrayList<>();
         
         try
