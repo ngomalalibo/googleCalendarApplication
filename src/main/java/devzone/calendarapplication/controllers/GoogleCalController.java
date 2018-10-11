@@ -117,10 +117,11 @@ public class GoogleCalController
     }
     
     @RequestMapping(value = "/login/google", method = RequestMethod.GET)
-    public RedirectView googleConnectionStatus(HttpServletRequest request) throws Exception
+    public ModelAndView googleConnectionStatus(HttpServletRequest request) throws Exception
     {
         System.out.println("Inside googleConnectionStatus----------");
-        return new RedirectView(authorize());
+        //return new RedirectView(authorize());
+        return authorize();
     }
     
     @RequestMapping(value = "/login/google", method = RequestMethod.GET, params = "code")
@@ -155,7 +156,7 @@ public class GoogleCalController
         return mv;
     }
     
-    private String authorize() throws Exception
+    private ModelAndView authorize() throws Exception
     {
         System.out.println("Inside authorize----------");
         
@@ -215,6 +216,7 @@ public class GoogleCalController
             System.out.println("getCalendarEvents(events)---------->");
             
             mv.addObject("ee", ee);
+            mv.setViewName("welcome");
         }
         catch (Exception e)
         {
@@ -224,7 +226,7 @@ public class GoogleCalController
                     + " Redirecting to google connection status page.";
         }
         
-        return authUrl;
+        return mv;
     }
     
     /*@RequestMapping(value = "/login/google", method = RequestMethod.GET)
