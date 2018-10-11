@@ -265,10 +265,12 @@ public class GoogleCalController
         try
         {
             int counter = 0;
-            EventEntity eventPersist = new EventEntity();
+            
             
             for (Event event : events)
             {
+                EventEntity eventPersist = new EventEntity();
+                
                 System.out.println("Counter: "+counter);
                 eventPersist.setCreated(event.getCreated());
                 //eventPersist.setLocation(event.getLocation());
