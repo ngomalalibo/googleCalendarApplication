@@ -215,6 +215,11 @@ public class GoogleCalController
             List<EventEntity> ee = getCalendarEvents(events);
             System.out.println("getCalendarEvents(events)---------->");
             
+            for(EventEntity e: ee)
+            {
+                System.out.println("event Summary: "+e.getSummary());
+            }
+            
             mv.addObject("events", ee);
             mv.setViewName("welcome");
         }
