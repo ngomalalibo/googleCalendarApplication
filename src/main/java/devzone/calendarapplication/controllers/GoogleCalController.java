@@ -279,13 +279,13 @@ public class GoogleCalController
         }
         catch (Exception e)
         {
-            logger.warn("Exception while handling OAuth2 callback (" + e.getMessage() + ")."
+            logger.warn("Exception while handling OAuth2 callback (" + e.getClass() + ")."
                     + " Redirecting to google connection status page.");
-            message = "Exception while handling OAuth2 callback (" + e.getMessage() + ")."
+            message = "Exception while handling OAuth2 callback (" + e.getClass()+" "+ e.getCause()+ ")."
                     + " Redirecting to google connection status page.";
         }
         
-        System.out.println("cal message:" + message);
+        System.out.println("cal message: " + message);
         
         return ee;
     }
