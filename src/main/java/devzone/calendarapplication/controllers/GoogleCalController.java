@@ -280,10 +280,12 @@ public class GoogleCalController
                 
                 ee.add(eventPersist);
     
-                System.out.println("Before Persist-------");
-                
                 eventPersist.persist(eventPersist);
                 System.out.println("After Persist-------");
+            }
+            for(EventEntity e: ee)
+            {
+                System.out.println("event Summary inside getCalendarEvents: "+e.getSummary());
             }
         }
         catch (Exception e)
@@ -294,7 +296,7 @@ public class GoogleCalController
                     + " Redirecting to google connection status page.";
         }
         
-        System.out.println("cal message: " + message);
+        //System.out.println("cal message: " + message);
         
         return ee;
     }
