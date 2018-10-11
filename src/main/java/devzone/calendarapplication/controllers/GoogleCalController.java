@@ -215,7 +215,7 @@ public class GoogleCalController
             List<EventEntity> ee = getCalendarEvents(events);
             System.out.println("getCalendarEvents(events)---------->");
             
-            mv.addObject("ee", ee);
+            mv.addObject("events", ee);
             mv.setViewName("welcome");
         }
         catch (Exception e)
