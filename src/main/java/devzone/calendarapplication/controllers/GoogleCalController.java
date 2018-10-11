@@ -73,8 +73,7 @@ public class GoogleCalController
     private static HttpTransport httpTransport;
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static com.google.api.services.calendar.Calendar client;
-    //private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
-    private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
+    private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
     
     
@@ -180,19 +179,15 @@ public class GoogleCalController
 //                flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
 //                        Collections.singleton(CalendarScopes.CALENDAR)).build();
     
-                flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
+                /*flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
                         .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                         .setAccessType("offline")
-                        .build();
+                        .build();*/
     
-                authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
-                //authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
-                System.out.println("cal authorizationUrl->" + authorizationUrl);
-    
-                authUrl = authorizationUrl.build();
+                
     
                 // Load client secrets.
-                /*InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+                InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
                 GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
     
                 // Build flow and trigger user authorization request.
@@ -200,8 +195,14 @@ public class GoogleCalController
                         httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
                         .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                     .setAccessType("offline")
-                        .build();*/
+                        .build();
                 credential =  new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+    
+                authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
+                //authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
+                System.out.println("cal authorizationUrl->" + authorizationUrl);
+    
+                authUrl = authorizationUrl.build();
             }
             
             List<Event> events = CalendarQuickstart.getEvents(credential);
