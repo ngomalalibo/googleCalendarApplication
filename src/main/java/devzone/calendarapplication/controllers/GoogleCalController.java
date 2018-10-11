@@ -177,17 +177,7 @@ public class GoogleCalController
                 web.setClientSecret(clientSecret);
                 clientSecrets = new GoogleClientSecrets().setWeb(web);
                 httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-//                flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
-//                        Collections.singleton(CalendarScopes.CALENDAR)).build();
-    
-                /*flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
-                        .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-                        .setAccessType("offline")
-                        .build();*/
-    
-                
-    
-                // Load client secrets.
+//
                 InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
                 GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
     
@@ -200,25 +190,14 @@ public class GoogleCalController
                 credential =  new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
     
                 authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
-                //authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI).setAccessType("offline").setApprovalPrompt("force");
-                System.out.println("cal authorizationUrl->" + authorizationUrl);
     
                 authUrl = authorizationUrl.build();
     
-                System.out.println("after authorizationUrl.build()");
             }
             
             List<Event> events = CalendarQuickstart.getEvents(credential);
     
-            System.out.println("CalendarQuickstart.getEvents(credential)---------->");
-    
             List<EventEntity> ee = getCalendarEvents(events);
-                System.out.println("getCalendarEvents(events)---------->");
-            
-            for(EventEntity e: ee)
-            {
-                System.out.println("event Summary: "+e.getSummary());
-            }
             
             mv.addObject("events", ee);
             mv.setViewName("welcome");
@@ -259,31 +238,20 @@ public class GoogleCalController
     private List<EventEntity> getCalendarEvents(List<Event> events)
     {
     
-        System.out.println("Inside getCalendarEvents--------->");
         List<EventEntity> ee = new ArrayList<>();
         
         try
         {
-            int counter = 0;
-            
-            
             for (Event event : events)
             {
                 EventEntity eventPersist = new EventEntity();
                 
-                System.out.println("Counter: "+counter);
                 eventPersist.setCreated(event.getCreated());
-                //eventPersist.setLocation(event.getLocation());
                 eventPersist.setSummary(event.getSummary());
     
-                System.out.println("Created Date: "+eventPersist.getCreated());
-                //System.out.println("Description: "+eventPersist.getDescription());
-                System.out.println("Summary: "+eventPersist.getSummary());
-                
                 ee.add(eventPersist);
     
                 eventPersist.persist(eventPersist);
-                System.out.println("After Persist-------");
             }
             for(EventEntity e: ee)
             {
