@@ -68,6 +68,7 @@ public class CalendarQuickstart
     //public static void main(String... args) throws IOException, GeneralSecurityException
     public static List<Event> getEvents(Credential credential) throws IOException, GeneralSecurityException
     {
+        System.out.println("Inside getEvents--------");
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         
