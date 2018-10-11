@@ -186,7 +186,7 @@ public class GoogleCalController
                 // Build flow and trigger user authorization request.
                 GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                         httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
-                        .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                        //.setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                     .setAccessType("offline")
                         .build();
                 credential =  new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
@@ -197,8 +197,8 @@ public class GoogleCalController
     
                 authUrl = authorizationUrl.build();
             }
-            
-            List<Event> events = CalendarQuickstart.getEvents(credential);
+            List<Event> events = new ArrayList<>();
+            events = CalendarQuickstart.getEvents(credential);
     
             List<EventEntity> ee = getCalendarEvents(events);
             
@@ -239,6 +239,7 @@ public class GoogleCalController
     
     private List<EventEntity> getCalendarEvents(List<Event> events)
     {
+        System.out.println("Inside getCalendarEvents------------");
         List<EventEntity> ee = new ArrayList<>();
         
         try
